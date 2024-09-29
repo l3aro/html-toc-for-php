@@ -18,4 +18,11 @@ class HtmlTocServiceProvider extends PackageServiceProvider
             ->name('html-toc')
             ->hasConfigFile();
     }
+
+    public function registeringPackage()
+    {
+        $this->app->bind(HtmlToc::class, function ($app) {
+            return new HtmlToc($app->make(\Masterminds\HTML5::class));
+        });
+    }
 }
