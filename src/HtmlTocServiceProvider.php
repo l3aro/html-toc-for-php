@@ -2,6 +2,8 @@
 
 namespace l3aro\HtmlToc;
 
+use Knp\Menu\Matcher\Matcher;
+use Knp\Menu\Renderer\ListRenderer;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -21,8 +23,18 @@ class HtmlTocServiceProvider extends PackageServiceProvider
 
     public function registeringPackage()
     {
-        $this->app->bind(HtmlToc::class, function ($app) {
-            return new HtmlToc($app->make(\Masterminds\HTML5::class));
+        $this->app->bind(HtmlTocContract::class, function ($app) {
+            return new HtmlToc(
+                $app->make(\Masterminds\HTML5::class),
+                $app->make(\Knp\Menu\MenuFactory::class),
+                new ListRenderer(
+                    new Matcher(),
+                    [
+                        'currentClass' => 'active',
+                        'ancestorClass' => 'active-parent',
+                    ]
+                )
+            );
         });
     }
 }

@@ -12,6 +12,6 @@ class HtmlToc extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \l3aro\HtmlToc\HtmlToc::class;
+        return \l3aro\HtmlToc\HtmlTocContract::class;
     }
 }

@@ -2,54 +2,155 @@
 
 namespace l3aro\HtmlToc;
 
-use ArrayIterator;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use Illuminate\Support\Str;
+use Knp\Menu\ItemInterface;
+use Knp\Menu\MenuFactory;
+use Knp\Menu\Renderer\ListRenderer;
+use l3aro\HtmlToc\Exceptions\ContentNotSetException;
 use Masterminds\HTML5;
 
-class HtmlToc
+class HtmlToc implements HtmlTocContract
 {
+    protected string $markup;
+
+    protected ?string $content = null;
+
+    protected int $topLevel = 1;
+
+    protected int $maxDepth = 6;
+
     public function __construct(
         protected HTML5 $parser,
-        protected ?string $content = null,
+        protected MenuFactory $menuFactory,
+        protected ListRenderer $listRenderer,
     ) {}
 
-    public function from($content): static
+    public function from($content, int $topLevel = 1, int $maxDepth = 6): static
     {
         $this->content = $content;
+        $this->topLevel = $topLevel;
+        $this->maxDepth = $maxDepth;
+
+        $this->prepareMarkup();
 
         return $this;
     }
 
-    public function prepareMarkup(int $topLevel = 1, int $depth = 6): string
+    protected function prepareMarkup(): static
     {
+        if (! isset($this->content)) {
+            throw ContentNotSetException::make();
+        }
+
         $this->ensureContentHasBodyTag();
 
-        $domDocument = $this->loadHtml($topLevel, $depth);
+        $domDocument = $this->loadHtml();
 
-        return $this->parser->saveHTML($domDocument);
+        $this->markup = $this->parser->saveHTML(
+            $domDocument->getElementsByTagName('body')->item(0)->childNodes,
+        );
+
+
+        return $this;
+    }
+
+    public function getMarkup(): string
+    {
+        if (! isset($this->markup)) {
+            $this->prepareMarkup();
+        }
+
+        return $this->markup;
+    }
+
+    public function getTableOfContent(): string
+    {
+        $menu = $this->menuFactory->createItem('tableOfContent');
+
+        if (! isset($this->markup)) {
+            $this->prepareMarkup();
+        }
+
+        $tagsToMatch = $this->determineHeaderTags();
+
+        $lastElement = $menu;
+
+        $domDocument = $this->parser->loadHTML($this->markup);
+
+        foreach ($this->traverseHeaderTags($domDocument) as $node) {
+            if (! $node->hasAttribute('id')) {
+                continue;
+            }
+
+            $tagName = $node->tagName;
+            /** @var int $level */
+            $level = array_search(strtolower($tagName), $tagsToMatch) + 1;
+            $parent = $this->getParentToAddChildTo($lastElement, $level);
+
+            $lastElement = $parent->addChild(
+                $node->getAttribute('id'),
+                [
+                    'label' => $node->getAttribute('title') ?: $node->textContent,
+                    'uri' => '#' . $node->getAttribute('id'),
+                ]
+            );
+        }
+
+        return $this->listRenderer->render($menu);
+    }
+
+    protected function getParentToAddChildTo(ItemInterface $lastElement, int $level): ItemInterface
+    {
+        if ($level === 1) {
+            return $lastElement;
+        }
+
+        if ($level === $lastElement->getLevel()) {
+            return $lastElement->getParent();
+        }
+
+        if ($level > $lastElement->getLevel()) {
+            $parent = $lastElement;
+
+            for ($counter = $lastElement->getLevel(); $counter < $level; $counter++) {
+                $parent = $parent->addChild('');
+            }
+
+            return $parent;
+        }
+
+        $parent = $lastElement->getParent();
+
+        while ($parent->getLevel() > $level - 1) {
+            $parent = $parent->getParent();
+        }
+
+        return $parent;
     }
 
     protected function ensureContentHasBodyTag(): static
     {
+        if (strpos($this->content, "<body") !== false && strpos($this->content, "</body>") !== false) {
+            return $this;
+        }
+
         $this->content = sprintf(
-            "<body id='%s'>%s</body>",
-            uniqid('toc_generator_'),
+            "<body>%s</body>",
             $this->content,
         );
 
         return $this;
     }
 
-    protected function loadHtml(int $topLevel, int $depth): DOMDocument
+    protected function loadHtml(): DOMDocument
     {
         $domDocument = $this->parser->loadHTML($this->content);
         $domDocument->preserveWhiteSpace = true;
 
-        /** @var DOMElement $node */
-        foreach ($this->traverseHeaderTags($domDocument, $topLevel, $depth) as $node) {
+        foreach ($this->traverseHeaderTags($domDocument) as $node) {
             if ($node->getAttribute('id')) {
                 continue;
             }
@@ -60,7 +161,10 @@ class HtmlToc
         return $domDocument;
     }
 
-    protected function traverseHeaderTags(DOMDocument $domDocument, int $topLevel, int $depth)
+    /**
+     * @return DOMElement[]
+     */
+    protected function traverseHeaderTags(DOMDocument $domDocument): array
     {
         $xPath = new DOMXPath($domDocument);
         $xPathQuery = sprintf(
@@ -68,24 +172,23 @@ class HtmlToc
             implode(
                 ' or ',
                 array_map(
-                    fn($localName) => sprintf('local-name() = "%s', $localName),
-                    $this->determineHeaderTags($topLevel, $depth),
+                    fn($localName) => sprintf('local-name() = "%s"', $localName),
+                    $this->determineHeaderTags(),
                 ),
             ),
         );
 
         $nodes = [];
         foreach ($xPath->query($xPathQuery) as $node) {
-            dd($node);
-            $nodes = $node;
+            $nodes[] = $node;
         }
 
-        return new ArrayIterator($nodes);
+        return $nodes;
     }
 
-    protected function determineHeaderTags(int $topLevel, int $depth)
+    protected function determineHeaderTags()
     {
-        $desired = range($topLevel, $topLevel + ($depth - 1));
+        $desired = range($this->topLevel, $this->topLevel + ($this->maxDepth - 1));
         $allowed = [1, 2, 3, 4, 5, 6];
 
         return array_map(
