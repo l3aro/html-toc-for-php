@@ -155,7 +155,7 @@ class HtmlToc implements HtmlTocContract
                 continue;
             }
 
-            $node->setAttribute('id', Str::ulid()->toString());
+            $node->setAttribute('id', uniqid());
         }
 
         return $domDocument;
