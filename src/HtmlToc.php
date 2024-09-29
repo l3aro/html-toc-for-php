@@ -37,7 +37,7 @@ class HtmlToc
         $this->content = sprintf(
             "<body id='%s'>%s</body>",
             uniqid('toc_generator_'),
-            $this->content
+            $this->content,
         );
 
         return $this;
@@ -69,9 +69,9 @@ class HtmlToc
                 ' or ',
                 array_map(
                     fn($localName) => sprintf('local-name() = "%s', $localName),
-                    $this->determineHeaderTags($topLevel, $depth)
-                )
-            )
+                    $this->determineHeaderTags($topLevel, $depth),
+                ),
+            ),
         );
 
         $nodes = [];
@@ -90,7 +90,7 @@ class HtmlToc
 
         return array_map(
             fn($value) => 'h' . $value,
-            array_intersect($desired, $allowed)
+            array_intersect($desired, $allowed),
         );
     }
 }
