@@ -4,7 +4,6 @@ namespace L3aro\HtmlToc;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use L3aro\HtmlToc\Commands\HtmlTocCommand;
 
 class HtmlTocServiceProvider extends PackageServiceProvider
 {
