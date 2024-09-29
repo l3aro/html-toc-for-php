@@ -16,7 +16,7 @@
     backupStaticProperties="false"
 >
     <testsuites>
-        <testsuite name="L3aro Test Suite">
+        <testsuite name="l3aro Test Suite">
             <directory>tests</directory>
         </testsuite>
     </testsuites>

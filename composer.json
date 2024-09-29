@@ -36,13 +36,13 @@
     },
     "autoload": {
         "psr-4": {
-            "L3aro\\HtmlToc\\": "src/",
-            "L3aro\\HtmlToc\\Database\\Factories\\": "database/factories/"
+            "l3aro\\HtmlToc\\": "src/",
+            "l3aro\\HtmlToc\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "L3aro\\HtmlToc\\Tests\\": "tests/",
+            "l3aro\\HtmlToc\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -74,10 +74,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "L3aro\\HtmlToc\\HtmlTocServiceProvider"
+                "l3aro\\HtmlToc\\HtmlTocServiceProvider"
             ],
             "aliases": {
-                "HtmlToc": "L3aro\\HtmlToc\\Facades\\HtmlToc"
+                "HtmlToc": "l3aro\\HtmlToc\\Facades\\HtmlToc"
             }
         }
     },

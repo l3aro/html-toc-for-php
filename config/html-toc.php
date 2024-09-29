@@ -1,6 +1,6 @@
 <?php
 
-// config for L3aro/HtmlToc
+// config for l3aro/HtmlToc
 return [
 
 ];

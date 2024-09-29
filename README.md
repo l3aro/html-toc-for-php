@@ -52,8 +52,8 @@ php artisan vendor:publish --tag="html-toc-views"
 ## Usage
 
 ```php
-$htmlToc = new L3aro\HtmlToc();
-echo $htmlToc->echoPhrase('Hello, L3aro!');
+$htmlToc = new l3aro\HtmlToc();
+echo $htmlToc->echoPhrase('Hello, l3aro!');
 ```
 
 ## Testing

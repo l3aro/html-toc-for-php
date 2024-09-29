@@ -64,5 +64,5 @@ it('can setup the markup with random ids', function () {
     HTML;
 
 
-    dd(\L3aro\HtmlToc\Facades\HtmlToc::from($html)->prepareMarkup());
+    dd(\l3aro\HtmlToc\Facades\HtmlToc::from($html)->prepareMarkup());
 });

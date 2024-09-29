@@ -1,6 +1,6 @@
 <?php
 
-namespace L3aro\HtmlToc;
+namespace l3aro\HtmlToc;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
