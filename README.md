@@ -23,14 +23,14 @@ composer require l3aro/html-toc
 use l3aro\HtmlToc\HtmlToc;
 
 public function show(HtmlToc $toc) {
-	$content = <<<HTML
-		<h2>This is heading H2</h2>
-		<h3>This is heading H3</h3>
-		<h4>This is heading H4</h4>
-		<h2>This is heading H1</h2>
+    $content = <<<HTML
+        <h2>This is heading H2</h2>
+        <h3>This is heading H3</h3>
+        <h4>This is heading H4</h4>
+        <h2>This is heading H2</h2>
     HTML;
 
-	$markup = $toc->from($content);
+    $markup = $toc->from($content);
     $markupContent = $markup->getMarkup();
     $tableOfContent = $markup->getTableOfContent();
 
@@ -47,14 +47,14 @@ public function show(HtmlToc $toc) {
 use l3aro\HtmlToc\Facades\HtmlToc;
 
 public function show() {
-    	$content = <<<HTML
-		<h2>This is heading H2</h2>
-		<h3>This is heading H3</h3>
-		<h4>This is heading H4</h4>
-		<h2>This is heading H1</h2>
+    $content = <<<HTML
+        <h2>This is heading H2</h2>
+        <h3>This is heading H3</h3>
+        <h4>This is heading H4</h4>
+        <h2>This is heading H2</h2>
     HTML;
 
-	$markup = HtmlToc::from($content);
+    $markup = HtmlToc::from($content);
     $markupContent = $markup->getMarkup();
     $tableOfContent = $markup->getTableOfContent();
 
