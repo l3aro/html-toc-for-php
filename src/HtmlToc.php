@@ -87,7 +87,7 @@ class HtmlToc implements HtmlTocContract
             $tagName = $node->tagName;
             /** @var int $level */
             $level = array_search(strtolower($tagName), $tagsToMatch) + 1;
-            $parent = $this->getParentToAddChildTo($lastElement, $level);
+            $parent = $this->getParentToAddChildTo($lastElement, $level, $menu);
 
             $lastElement = $parent->addChild(
                 $node->getAttribute('id'),
@@ -101,10 +101,10 @@ class HtmlToc implements HtmlTocContract
         return $this->listRenderer->render($menu);
     }
 
-    protected function getParentToAddChildTo(ItemInterface $lastElement, int $level): ItemInterface
+    protected function getParentToAddChildTo(ItemInterface $lastElement, int $level, ItemInterface $menu): ItemInterface
     {
         if ($level === 1) {
-            return $lastElement;
+            return $menu;
         }
 
         if ($level === $lastElement->getLevel()) {
@@ -114,7 +114,7 @@ class HtmlToc implements HtmlTocContract
         if ($level > $lastElement->getLevel()) {
             $parent = $lastElement;
 
-            for ($counter = $lastElement->getLevel(); $counter < $level; $counter++) {
+            for ($counter = $lastElement->getLevel(); $counter < $level - 1; $counter++) {
                 $parent = $parent->addChild('');
             }
 
