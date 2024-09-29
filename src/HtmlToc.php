@@ -5,7 +5,6 @@ namespace l3aro\HtmlToc;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
-use Illuminate\Support\Str;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuFactory;
 use Knp\Menu\Renderer\ListRenderer;
