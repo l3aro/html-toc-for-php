@@ -4,7 +4,7 @@ namespace l3aro\HtmlToc\Exceptions;
 
 use Exception;
 
-class ContentNotSetException extends Exception
+final class ContentNotSetException extends Exception
 {
     public static function make(): static
     {

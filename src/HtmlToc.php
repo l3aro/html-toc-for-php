@@ -95,7 +95,7 @@ class HtmlToc implements HtmlTocContract
                 [
                     'label' => $node->getAttribute('title') ?: $node->textContent,
                     'uri' => '#' . $node->getAttribute('id'),
-                ]
+                ],
             );
         }
 

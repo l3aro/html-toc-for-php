@@ -36,8 +36,7 @@
     },
     "autoload": {
         "psr-4": {
-            "l3aro\\HtmlToc\\": "src/",
-            "l3aro\\HtmlToc\\Database\\Factories\\": "database/factories/"
+            "l3aro\\HtmlToc\\": "src/"
         }
     },
     "autoload-dev": {

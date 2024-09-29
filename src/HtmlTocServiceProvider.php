@@ -32,8 +32,8 @@ class HtmlTocServiceProvider extends PackageServiceProvider
                     [
                         'currentClass' => 'active',
                         'ancestorClass' => 'active-parent',
-                    ]
-                )
+                    ],
+                ),
             );
         });
     }
